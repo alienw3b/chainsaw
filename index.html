@@ -5,213 +5,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Medidas de Corte</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
         body {
-            font-family: 'Roboto', sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
+            font-family: 'Arial', sans-serif;
             background-color: #f4f4f4;
             text-align: center;
-            color: #fff;
-            background-color: #333;
+            margin: 0;
+            padding: 0;
         }
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: auto;
             padding: 20px;
-            background: #1a1a1a;
+            background: #ffffff;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #c71585;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
         }
         .btn {
-            display: inline-block;
-            margin: 10px 0;
+            background-color: #4CAF50;
+            color: white;
             padding: 10px 20px;
-            font-size: 1em;
-            font-weight: bold;
-            color: #fff;
-            background-color: #8a2be2;
+            margin: 10px;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
         }
         .btn:hover {
-            background-color: #6a1a9a;
+            background-color: #45a049;
         }
-        .results {
+        .result-container, .vd-container {
             margin-top: 20px;
+            text-align: left;
         }
-        .window-result {
-            margin-bottom: 20px;
-        }
-        #copyButton, #copyVDButton {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 1em;
-            font-weight: bold;
-            color: #fff;
-            background-color: #32cd32;
-            border: none;
+        .vd-container {
+            background: #f9f9f9;
+            padding: 15px;
             border-radius: 5px;
-            cursor: pointer;
+            border: 1px solid #ccc;
         }
-        #vdResults {
-            margin-top: 20px;
-            padding: 10px;
-            background: #444;
-            border-radius: 5px;
-            color: #fff;
-            font-size: 1em;
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #4CAF50;
         }
     </style>
     <script>
-        function showObjectTypeSelection() {
-            document.getElementById('objectTypeSelection').style.display = 'block';
-        }
-
-        function selectObjectType(type) {
-            document.getElementById('objectTypeSelection').style.display = 'none';
-            document.getElementById('materialSelection').style.display = 'block';
-            document.getElementById('objectType').value = type;
-        }
-
-        function selectMaterial(material) {
-            document.getElementById('materialSelection').style.display = 'none';
-            if (material === 'FISA') {
-                startCalculation();
-            } else if (material === 'CHINO') {
-                document.getElementById('results').innerHTML = '<p>PRÓXIMAMENTE AÑADIREMOS ESE Y MÁS PERFILES PARA TRABAJAR :)</p>';
-            }
-        }
-
         function startCalculation() {
-            const objectType = document.getElementById('objectType').value;
-            const numObjects = parseInt(prompt(`¿CUÁNTAS ${objectType === 'PUERTA' ? 'PUERTAS' : 'VENTANAS'} VAS A FABRICAR?`));
-            
+            const numObjects = parseInt(prompt("¿Cuántas ventanas deseas fabricar?"));
+
+            // Validar número de ventanas
             if (isNaN(numObjects) || numObjects <= 0) {
-                alert("POR FAVOR, INGRESA UN NÚMERO VÁLIDO.");
+                alert("Por favor, ingresa un número válido.");
                 return;
             }
-            
-            let totalJamba = 0;
-            let totalRiel = 0;
-            let totalVertical = 0;
-            let totalHorizontal = 0;
-            let totalMaya = 0;
-            let vdList = []; // Lista para almacenar las medidas de VD
 
+            let results = ""; // Contenedor de resultados generales
+            let vdResults = []; // Contenedor de las medidas VD
+
+            // Generar resultados para cada ventana
             for (let i = 1; i <= numObjects; i++) {
-                const width = parseFloat(prompt(`INGRESA EL ANCHO DE LA ${objectType.toLowerCase()} ${i}:`));
-                const height = parseFloat(prompt(`INGRESA EL ALTO DE LA ${objectType.toLowerCase()} ${i}:`));
-                
+                const width = parseFloat(prompt(`Ingresa el ancho de la ventana ${i}:`));
+                const height = parseFloat(prompt(`Ingresa el alto de la ventana ${i}:`));
+
                 if (isNaN(width) || isNaN(height)) {
-                    alert("POR FAVOR, INGRESA VALORES NUMÉRICOS VÁLIDOS.");
+                    alert("Por favor, ingresa valores numéricos válidos.");
                     return;
                 }
-                
-                if (objectType === 'VENTANA') {
-                    const J = height - 1;
-                    const R = width;
-                    const V = J - 1.7;
-                    const H = R / 2 - 6;
-                    const M = `${V.toFixed(2)} x ${(H + 3).toFixed(2)}`;
-                    const VD = `${(V - 6.7).toFixed(2)} x ${(H + 1.3).toFixed(2)}`;
-                    vdList.push(`${VD} = 2`); // Agregar la medida de VD a la lista
 
-                    const Jamba = J * 2 + 4;
-                    const Riel = R * 2 + 4;
-                    const Vertical = V * 4 + 6;
-                    const Horizontal = H * 4 + 6;
-                    const [M1, M2] = M.split(" x ").map(Number);
-                    const Maya = (M1 + M2) * 2 + 6;
+                const J = height - 1;
+                const R = width;
+                const V = J - 1.7;
+                const H = R / 2 - 6;
+                const M = `${V.toFixed(2)} x ${(H + 3).toFixed(2)}`;
+                const VD = `${(V - 6.7).toFixed(2)} x ${(H + 1.3).toFixed(2)}`;
 
-                    totalJamba += Jamba;
-                    totalRiel += Riel;
-                    totalVertical += Vertical;
-                    totalHorizontal += Horizontal;
-                    totalMaya += Maya;
+                vdResults.push(`${VD} = 2`); // Guardar VD con el formato pedido
 
-                    const area = width * height;
-                    const price = area * 70;
-
-                    document.getElementById('results').innerHTML += `
-                        <div class="window-result">
-                            <h2>VENTANA ${i}</h2>
-                            <p>MEDIDAS DE CORTE:</p>
-                            <p>J: ${J.toFixed(2)}</p>
-                            <p>R: ${R.toFixed(2)}</p>
-                            <p>V: ${V.toFixed(2)}</p>
-                            <p>H: ${H.toFixed(2)}</p>
-                            <p>M: ${M}</p>
-                            <p>VD: ${VD}</p>
-                            <p>PRECIO: $${price.toFixed(2)}</p>
-                        </div>
-                    `;
-                }
-            }
-
-            // Mostrar las medidas de VD
-            if (vdList.length > 0) {
-                document.getElementById('results').innerHTML += `
-                    <div id="vdResults">
-                        <h2>MEDIDAS VD</h2>
-                        ${vdList.map(vd => `<p>${vd}</p>`).join('')}
+                // Agregar resultados individuales
+                results += `
+                    <div>
+                        <h2>Ventana ${i}</h2>
+                        <p><strong>J:</strong> ${J.toFixed(2)}</p>
+                        <p><strong>R:</strong> ${R.toFixed(2)}</p>
+                        <p><strong>V:</strong> ${V.toFixed(2)}</p>
+                        <p><strong>H:</strong> ${H.toFixed(2)}</p>
+                        <p><strong>M:</strong> ${M}</p>
+                        <p><strong>VD:</strong> ${VD}</p>
+                        <hr>
                     </div>
                 `;
-
-                // Agregar botón para copiar solo las medidas de VD
-                const copyVDButton = document.createElement('button');
-                copyVDButton.id = 'copyVDButton';
-                copyVDButton.textContent = 'COPIAR MEDIDAS VD';
-                copyVDButton.onclick = function() {
-                    const vdText = vdList.join('\n');
-                    navigator.clipboard.writeText(vdText)
-                        .then(() => alert('MEDIDAS VD COPIADAS AL PORTAPAPELES!'))
-                        .catch(err => alert('ERROR AL COPIAR LAS MEDIDAS VD.'));
-                };
-                document.getElementById('results').appendChild(copyVDButton);
             }
 
-            // Agregar botón para copiar todos los resultados
-            const copyButton = document.createElement('button');
-            copyButton.id = 'copyButton';
-            copyButton.textContent = 'COPIAR RESULTADO';
-            copyButton.onclick = function() {
-                navigator.clipboard.writeText(document.getElementById('results').innerText)
-                    .then(() => alert('RESULTADO COPIADO AL PORTAPAPELES!'))
-                    .catch(err => alert('ERROR AL COPIAR EL RESULTADO.'));
+            // Mostrar resultados generales
+            document.getElementById("results").innerHTML = results;
+
+            // Mostrar medidas VD abajo con el botón copiar
+            const vdContainer = document.getElementById("vd-results");
+            vdContainer.innerHTML = `<h2>Resultados VD</h2>`;
+            vdResults.forEach(vd => {
+                vdContainer.innerHTML += `<p>${vd}</p>`;
+            });
+
+            // Botón para copiar las medidas VD
+            const copyButton = document.createElement("button");
+            copyButton.textContent = "Copiar VD";
+            copyButton.classList.add("btn");
+            copyButton.onclick = function () {
+                const textToCopy = vdResults.join("\n");
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => alert("Resultados VD copiados al portapapeles."))
+                    .catch(err => alert("Error al copiar resultados: " + err));
             };
-            document.getElementById('results').appendChild(copyButton);
+            vdContainer.appendChild(copyButton);
         }
 
         function reset() {
-            document.getElementById('results').innerHTML = '';
-            document.getElementById('objectType').value = '';
+            document.getElementById("results").innerHTML = "";
+            document.getElementById("vd-results").innerHTML = "";
         }
     </script>
 </head>
 <body>
     <div class="container">
-        <h1>CALCULADORA DE MEDIDAS DE CORTE</h1>
-        <a class="btn" onclick="showObjectTypeSelection()">START</a>
-        <a class="btn" onclick="reset()">RESET</a>
-        <div id="objectTypeSelection" class="selection">
-            <p>SELECCIONA EL TIPO DE OBJETO QUE VAS A FABRICAR:</p>
-            <button onclick="selectObjectType('PUERTA')">PUERTA</button>
-            <button onclick="selectObjectType('VENTANA')">VENTANA</button>
-        </div>
-        <div id="materialSelection" class="selection">
-            <p>SELECCIONA EL MATERIAL QUE VAS A USAR:</p>
-            <button onclick="selectMaterial('FISA')">FISA</button>
-            <button onclick="selectMaterial('CHINO')">CHINO</button>
-        </div>
-        <input type="hidden" id="objectType">
-        <div id="results" class="results"></div>
+        <h1>Calculadora de Medidas de Corte</h1>
+        <button class="btn" onclick="startCalculation()">Iniciar</button>
+        <button class="btn" onclick="reset()">Reiniciar</button>
+        <div id="results" class="result-container"></div>
+        <div id="vd-results" class="vd-container"></div>
     </div>
 </body>
 </html>
